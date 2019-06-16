@@ -6,13 +6,53 @@
 
 // Include statements.
 #include <cassert>
-#include <cstdio>
+#include <iomanip>
+#include <iostream>
 
 template <typename T> class Matrix {
   public:
-    // Constructor.
-    Matrix() { }
+    // Constructor. Dimensions default to 1.
+    // @param n (int): Number of rows.
+    // @param m (int): Number of rows.
+    // @param values (T**): Supplied entries; optional.
+    Matrix(int n = 1, int m = 1, T **values = NULL) {
+        this->n = n;
+        this->m = m;
+
+        // Initialize entries.
+        entries = new T *[n];
+        for (size_t i = 0; i < n; i++) {
+            entries[i] = new T[m];
+
+            if (values != NULL) {
+                for (size_t j = 0; j < m; j++)
+                    entries[i][j] = values[i][j];
+            }
+        }
+    }
 
     // Destructor.
-    ~Matrix() { }
-}
+    ~Matrix() {
+        for (size_t i = 0; i < n; i++)
+            delete[] entries[i];
+        delete[] entries;
+    }
+
+    // Print the entries of the matrix to stdout.
+    void print_entries() {
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = 0; j < m; j++)
+                std::cout << std::setw(2) << entries[i][j] << ' ';
+            std::cout << std::endl;
+        }
+    }
+
+  private:
+    // Dimensions.
+    int n, m;
+
+    // Values in the matrix.
+    T **entries;
+};
+
+#endif
