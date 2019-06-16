@@ -1,32 +1,12 @@
-# Prerequisites
-*.d
+# Files to ignore for remote repo.
 
-# Compiled Object files
-*.slo
-*.lo
+# Object files and executables.
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
 *.out
-*.app
+
+# Finder generates these files on OSX.
+.DS_Store
+
+# Build folder for generated tests, etc.
+build/
