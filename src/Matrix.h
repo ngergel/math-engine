@@ -56,9 +56,9 @@ template <typename T> class Matrix {
 
     // Add the values of another matrix to this one.
     // @param A (const Matrix &): The matrix to add to this one.
-    Matrix& operator+ (const Matrix &A) {
+    Matrix &operator+(const Matrix &A) {
         assert(n == A.n && m == A.m);
-        
+
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++)
                 entries[i][j] += A.entries[i][j];
@@ -69,7 +69,7 @@ template <typename T> class Matrix {
 
     // Subtract the values of another matrix to this one.
     // @param A (const Matrix &): The matrix to subtract from this one.
-    Matrix& operator- (const Matrix &A) {
+    Matrix &operator-(const Matrix &A) {
         assert(n == A.n && m == A.m);
 
         for (size_t i = 0; i < n; i++) {
