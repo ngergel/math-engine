@@ -11,6 +11,12 @@
 
 template <typename T> class Matrix {
   public:
+    // Dimensions.
+    int n, m;
+
+    // Values in the matrix.
+    T **entries;
+
     // Constructor. Dimensions default to 1.
     // @param n (int): Number of rows.
     // @param m (int): Number of rows.
@@ -39,20 +45,40 @@ template <typename T> class Matrix {
     }
 
     // Print the entries of the matrix to stdout.
-    void print_entries() {
+    // @param w (int): Width of the columns.
+    void print_entries(int w = 0) {
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++)
-                std::cout << std::setw(2) << entries[i][j] << ' ';
+                std::cout << std::setw(w) << entries[i][j] << ' ';
             std::cout << std::endl;
         }
     }
 
-  private:
-    // Dimensions.
-    int n, m;
+    // Add the values of another matrix to this one.
+    // @param A (const Matrix &): The matrix to add to this one.
+    Matrix& operator+ (const Matrix &A) {
+        assert(n == A.n && m == A.m);
+        
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = 0; j < m; j++)
+                entries[i][j] += A.entries[i][j];
+        }
 
-    // Values in the matrix.
-    T **entries;
+        return *this;
+    }
+
+    // Subtract the values of another matrix to this one.
+    // @param A (const Matrix &): The matrix to subtract from this one.
+    Matrix& operator- (const Matrix &A) {
+        assert(n == A.n && m == A.m);
+
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = 0; j < m; j++)
+                entries[i][j] -= A.entries[i][j];
+        }
+
+        return *this;
+    }
 };
 
 #endif
