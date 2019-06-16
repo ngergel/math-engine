@@ -1,0 +1,4 @@
+# Format config for entire project.
+
+BasedOnStyle: LLVM
+IndentWidth: 4
