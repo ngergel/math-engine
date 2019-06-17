@@ -59,40 +59,61 @@ template <typename T> class Matrix {
     // @param A (const Matrix &): The matrix to add to this one.
     Matrix &operator+(const Matrix &A) {
         assert(n == A.getN() && m == A.getM());
-        Matrix result(n, m);
+        T result[n][m];
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++)
                 result[i][j] = entries[i][j] + A(i, j);
         }
-        return result;
+        return Matrix(n, m, result);
     }
 
     // Subtract the values of another matrix to this one.
     // @param A (const Matrix &): The matrix to subtract from this one.
     Matrix &operator-(const Matrix &A) {
         assert(n == A.getN() && m == A.getM());
-        Matrix result(n, m);
+        T result[n][m];
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++)
                 result[i][j] = entries[i][j] - A(i, j);
         }
-        return result;
+        return Matrix(n, m, result);
+    }
+
+    // Scalar multiplication, note only works when A is on the right hand side
+    // @param A(const T): A scalar
+    Matrix &operator*(const T A){
+	T result[n][m];
+	for (size_t i = 0; i < n; i++) {
+	    for( size_t j = 0; j < m; j++) {
+		result[i][j] = entries[i][j] * A;
+	    }
+	}
+	return Matrix(n, m, result);
     }
 
     // () operator to act as subscript replacement
     // @param n(int):row
     // @param m(int):column
-    Matrix &operator() (int n, int m){
+    T &operator() (const int n, const int m){
 	return entries[n][m];
     }
 private:
     // Dimensions.
     int n, m;
-
     // Values in the matrix.
     T **entries;
 
 
 };
 
+template<typename T>
+Matrix<T> operator*(const T A, const Matrix<T> &rhs) {
+    T result[rhs.getN()][rhs.getM()];
+    for (size_t i = 0; i < rhs.getN(); i++) {
+	for (size_t j = 0; j < rhs.getM(); j++)
+                result[i][j] = rhs(i, j) * A;
+        }
+    return Matrix<T>(rhs.getN(), rhs.getM(), result);
+
+}
 #endif
