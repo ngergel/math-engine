@@ -10,3 +10,7 @@
 
 # Build folder for generated tests, etc.
 build/
+
+# For the emacs temporary files
+*~
+*.el

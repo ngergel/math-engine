@@ -11,12 +11,13 @@
 
 template <typename T> class Matrix {
   public:
-    // Dimensions.
-    int n, m;
-
-    // Values in the matrix.
-    T **entries;
-
+    
+    int getN(){
+	return n;
+    }
+    int getM(){
+	return m;
+    }
     // Constructor. Dimensions default to 1.
     // @param n (int): Number of rows.
     // @param m (int): Number of rows.
@@ -57,11 +58,11 @@ template <typename T> class Matrix {
     // Add the values of another matrix to this one.
     // @param A (const Matrix &): The matrix to add to this one.
     Matrix &operator+(const Matrix &A) {
-        assert(n == A.n && m == A.m);
-        Matrix result(A.n, A.m);
+        assert(n == A.getN() && m == A.getM());
+        Matrix result(n, m);
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++)
-                result[i][j] = entries[i][j] + A.entries[i][j];
+                result[i][j] = entries[i][j] + A(i, j);
         }
         return result;
     }
@@ -69,14 +70,29 @@ template <typename T> class Matrix {
     // Subtract the values of another matrix to this one.
     // @param A (const Matrix &): The matrix to subtract from this one.
     Matrix &operator-(const Matrix &A) {
-        assert(n == A.n && m == A.m);
-        Matrix result(A.n, A.m);
+        assert(n == A.getN() && m == A.getM());
+        Matrix result(n, m);
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++)
-                result[i][j] = entries[i][j] - A.entries[i][j];
+                result[i][j] = entries[i][j] - A(i, j);
         }
         return result;
     }
+
+    // () operator to act as subscript replacement
+    // @param n(int):row
+    // @param m(int):column
+    Matrix &operator() (int n, int m){
+	return entries[n][m];
+    }
+private:
+    // Dimensions.
+    int n, m;
+
+    // Values in the matrix.
+    T **entries;
+
+
 };
 
 #endif
