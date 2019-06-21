@@ -1,4 +1,5 @@
-#include "src/Matrix.h"
+#include "include/Matrix.h"
+#include "include/Vector.h"
 
 int main() {
     int cnt = 1;
@@ -23,14 +24,19 @@ int main() {
     Matrix<double> B(4, 5, arr);
 
     A.print_entries(2);
+    std::cout << "new" << std::endl;
     B.print_entries();
-
+    std::cout << "new" << std::endl;
     A = A + B;
 
     A.print_entries(2);
-
+    std::cout << "new" << std::endl;
     A = A - A;
 
+    A.print_entries(2);
+    std::cout << "new" <<std::endl;
+    A = A * 2;
+    
     A.print_entries();
 
     return 0;
