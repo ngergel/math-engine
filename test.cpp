@@ -4,12 +4,11 @@
 int main() {
     int cnt = 1;
 
-    double **arr = new double *[4];
+    double *arr = new double [20];
     for (int i = 0; i < 4; i++) {
-        arr[i] = new double[5];
 
         for (int j = 0; j < 5; j++) {
-            arr[i][j] = cnt++;
+            arr[i * 5 + j] = cnt++;
         }
     }
 
@@ -17,7 +16,7 @@ int main() {
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 5; j++) {
-            arr[i][j] = cnt++;
+            arr[i * 5 + j] = cnt++;
         }
     }
 
@@ -34,9 +33,9 @@ int main() {
     A = A - A;
 
     A.print_entries(2);
-    std::cout << "new" <<std::endl;
+    std::cout << "new" << std::endl;
     A = A * 2;
-    
+
     A.print_entries();
 
     return 0;
