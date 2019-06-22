@@ -4,7 +4,7 @@
 int main() {
     int cnt = 1;
 
-    double *arr = new double [20];
+    double *arr = new double[20];
     for (int i = 0; i < 4; i++) {
 
         for (int j = 0; j < 5; j++) {
