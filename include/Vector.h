@@ -49,11 +49,11 @@ template <typename T> class Vector {
     }
 
     // Assignment operator
-    void operator=(const Vector &A){
-	n = A.getN();
-	entries = new T[n];
-	for(size_t i = 0; i < n; i++)
-	    entries[n] = A[i];
+    void operator=(const Vector &A) {
+        n = A.getN();
+        entries = new T[n];
+        for (size_t i = 0; i < n; i++)
+            entries[n] = A[i];
     }
 
     // Subscript operator

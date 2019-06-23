@@ -10,20 +10,11 @@
 #include <iostream>
 template <typename T> class Matrix {
   public:
-    
-    int getN(){
-	return n;
-    }
-    int getM(){
-	return m;
-    }
+    int getN() { return n; }
+    int getM() { return m; }
 
-    const int getN() const {
-	return n;
-    }
-    const int getM() const{
-	return m;
-    }
+    const int getN() const { return n; }
+    const int getM() const { return m; }
     // Constructor. Dimensions default to 1.
     // @param n (int): Number of rows.
     // @param m (int): Number of rows.
@@ -64,30 +55,30 @@ template <typename T> class Matrix {
     // Assignment operator
     // @param A (const Matrix &): Matrix to assign to this one
     void operator=(const Matrix &A) {
-	
-	n = A.getN();
-	m = A.getM();
-	entries = new T *[n];
-	for (size_t i = 0; i < n; i++){
-	    entries[i] = new T[m];
-	    for(size_t j = 0; j < m; j++){
-		entries[i][j] = A(i, j);
-	    }
-	}
+
+        n = A.getN();
+        m = A.getM();
+        entries = new T *[n];
+        for (size_t i = 0; i < n; i++) {
+            entries[i] = new T[m];
+            for (size_t j = 0; j < m; j++) {
+                entries[i][j] = A(i, j);
+            }
+        }
     }
 
     // Add the values of another matrix to this one.
     // @param A (const Matrix &): The matrix to add to this one.
     Matrix<T> operator+(const Matrix<T> &A) {
         assert(n == A.getN() && m == A.getM());
-	T **result;
-	result = new T *[n];
+        T **result;
+        result = new T *[n];
         for (size_t i = 0; i < n; i++) {
-	    result[i] = new T[m];
-	    //std::cout << i << std::endl;
-            for (size_t j = 0; j < m; j++){
+            result[i] = new T[m];
+            // std::cout << i << std::endl;
+            for (size_t j = 0; j < m; j++) {
                 result[i][j] = entries[i][j] + A(i, j);
-	    }
+            }
         }
         return Matrix<T>(n, m, result);
     }
@@ -96,10 +87,10 @@ template <typename T> class Matrix {
     // @param A (const Matrix &): The matrix to subtract from this one.
     Matrix<T> operator-(const Matrix<T> &A) {
         assert(n == A.getN() && m == A.getM());
-	T **result;
-	result = new T*[n];
+        T **result;
+        result = new T *[n];
         for (size_t i = 0; i < n; i++) {
-	    result[i] = new T[m];
+            result[i] = new T[m];
             for (size_t j = 0; j < m; j++)
                 result[i][j] = entries[i][j] - A(i, j);
         }
@@ -108,46 +99,41 @@ template <typename T> class Matrix {
 
     // Scalar multiplication, note only works when A is on the right hand side
     // @param A(const T): A scalar
-    Matrix<T> operator*(const T A){
-	T **result;
-	result = new T *[n];
-	for (size_t i = 0; i < n; i++) {
-	    result[i] = new T[m];
-	    for( size_t j = 0; j < m; j++) {
-		result[i][j] = entries[i][j] * A;
-	    }
-	}
+    Matrix<T> operator*(const T A) {
+        T **result;
+        result = new T *[n];
+        for (size_t i = 0; i < n; i++) {
+            result[i] = new T[m];
+            for (size_t j = 0; j < m; j++) {
+                result[i][j] = entries[i][j] * A;
+            }
+        }
         return Matrix<T>(n, m, result);
     }
 
     // () operator to act as subscript replacement
     // @param n(int):row
     // @param m(int):column
-    T &operator() (const size_t n, const size_t m){
-	return entries[n][m];
+    T &operator()(const size_t n, const size_t m) { return entries[n][m]; }
+    const T &operator()(const size_t n, const size_t m) const {
+        return entries[n][m];
     }
-    const T &operator() (const size_t n, const size_t m) const{
-	return entries[n][m];
-    }
-private:
+
+  private:
     // Dimensions.
     size_t n, m;
     // Values in the matrix.
     T **entries;
-
-
 };
 
-template<typename T>
-Matrix<T> operator*(const T A, const Matrix<T> &rhs) {
+template <typename T> Matrix<T> operator*(const T A, const Matrix<T> &rhs) {
     T **result;
     result = new T *[rhs.getN()];
     for (size_t i = 0; i < rhs.getN(); i++) {
-	result[i] = new T[rhs.getM()];
-	for (size_t j = 0; j < rhs.getM(); j++)
-                result[i][j] = rhs(i, j) * A;
-        }
+        result[i] = new T[rhs.getM()];
+        for (size_t j = 0; j < rhs.getM(); j++)
+            result[i][j] = rhs(i, j) * A;
+    }
     return Matrix<T>(rhs.getN(), rhs.getM(), result);
-
 }
 #endif

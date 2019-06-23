@@ -34,9 +34,9 @@ int main() {
     A = A - A;
 
     A.print_entries(2);
-    std::cout << "new" <<std::endl;
+    std::cout << "new" << std::endl;
     A = A * 2;
-    
+
     A.print_entries();
 
     return 0;
