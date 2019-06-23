@@ -1,28 +1,31 @@
-// Vector Header
+// Vector Header.
 
-// Header guard
+// Header guard.
 #ifndef VECTOR_H
 #define VECTOR_H
-// Include statements
 
+// Include statements.
 #include <cassert>
 #include <iomanip>
 #include <iostream>
 
 template <typename T> class Vector {
   public:
-    int getN() { return n; }
+    int dim() { return n; }
 
-    // Constructor. Dimension default to 1
-    // @param n (int): Dimension of vector
-    // @param values (T*): Supplied entries; optional
+    // Constructor. Dimension defaults to 1.
+    // @param n (int): Dimension of vector.
+    // @param values (T*): Supplied entries; optional.
     Vector(int n = 1, T *values = NULL) {
         this->n = n;
 
-        // Init entries
-        entries = new T[n];
-        for (size_t i = 0; i < n; i++) {
-            entries[i] = values[i];
+        // Initalize entries.
+        this->entries = new T[n];
+
+        if (values != NULL) {
+            for (size_t i = 0; i < n; i++) {
+                this->entries[i] = values[i];
+            }
         }
     }
 
