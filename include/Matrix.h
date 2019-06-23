@@ -6,7 +6,6 @@
 
 // Include statements.
 #include <cassert>
-#include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <utility>
@@ -63,7 +62,8 @@ template <typename T> class Matrix {
         } else {
             // square! Possible non trivial
             T out = 0;
-            std::pair<Matrix<T> *, Matrix<T> *> LU = (*this).lu_decomp();
+            std::pair<const Matrix<T> *, const Matrix<T> *> LU =
+                (*this).lu_decomp();
             T l_out = (*LU.first)(0, 0);
             T u_out = (*LU.second)(0, 0);
             if (n > 1) {
@@ -76,12 +76,12 @@ template <typename T> class Matrix {
         }
     }
 
-    // Does LU decomp, returns a size 2 array. First is lower, second upper
-    std::pair<Matrix<T> *, Matrix<T> *> lu_decomp() {
+    // Does LU decomp, returns a pair containing pointers to two matrices. First
+    // is lower, second upper
+    std::pair<const Matrix<T> *, const Matrix<T> *> lu_decomp() {
         assert(n == m);
-        T lower[n * n], upper[n * n];
-        memset(lower, 0, sizeof(lower));
-        memset(upper, 0, sizeof(upper));
+        T lower[n * n] = {0};
+        T upper[n * n] = {0};
         // upper
         for (size_t i = 0; i < n; i++) {
             for (size_t j = i; j < n; j++) {
@@ -105,9 +105,12 @@ template <typename T> class Matrix {
                 }
             }
         }
-        Matrix<T> l(n, m, lower);
-        Matrix<T> u(n, m, upper);
-        return std::make_pair(&l, &u);
+        Matrix<T> *l = new Matrix<T>(n, m, lower);
+        Matrix<T> *u = new Matrix<T>(n, m, upper);
+
+        l->print_entries();
+        u->print_entries();
+        return std::make_pair(l, u);
     }
 
     // Assignment operator
