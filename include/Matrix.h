@@ -6,6 +6,7 @@
 
 // Include statements.
 #include <cassert>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <utility>
@@ -55,6 +56,7 @@ template <typename T> class Matrix {
         }
     }
 
+    // Calculates the determinant of the matrix
     T det() {
         if (n != m) {
             // non square! det = 0
@@ -111,6 +113,40 @@ template <typename T> class Matrix {
         l->print_entries();
         u->print_entries();
         return std::make_pair(l, u);
+    }
+
+    // Finds the inverse of the matrix
+    Matrix<T> *inverse() {
+        assert(this->det() != 0);
+        // Initialize an n dimensional identity matrix
+        T identity[n * m];
+        for (size_t i = 0; i < n; i++)
+            for (size_t j = 0; j < n; j++)
+                if (i != j)
+                    identity[i * m + j] = 0;
+                else
+                    identity[i * m + j] = 1;
+        // copy of matrix to manipulate
+        T *matrixCopy = new T[n * m];
+        std::memcpy(matrixCopy, entries, sizeof(T) * n * m);
+        // Gaussian elimination
+        for (size_t i = 0; i < n; i++) {
+            for (size_t k = 0; k < m; k++) {
+                identity[i * m + k] /= matrixCopy[i * m + i];
+                matrixCopy[i * m + k] /= matrixCopy[i * m + i];
+            }
+
+            for (size_t j = j = 0; j < n; j++)
+                if (j != i) {
+                    T factor = matrixCopy[j * m + i] / matrixCopy[i * m + i];
+                    for (size_t k = 0; k < m; k++) {
+                        matrixCopy[j * m + k] -= matrixCopy[i * m + k] * factor;
+                        identity[j * m + k] -= identity[i * m + k] * factor;
+                    }
+                }
+        }
+
+        return new Matrix<T>(n, m, identity);
     }
 
     // Assignment operator
