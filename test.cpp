@@ -38,5 +38,10 @@ int main() {
 
     A.print_entries();
 
+    int square[] = {1, 2, 3, 4};
+    Matrix<int> det(2, 2, square);
+    det.print_entries();
+    double d = det.det();
+    std::cout << d << std::endl;
     return 0;
 }

@@ -6,8 +6,10 @@
 
 // Include statements.
 #include <cassert>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
+#include <utility>
 template <typename T> class Matrix {
   public:
     int getN() { return n; }
@@ -46,20 +48,82 @@ template <typename T> class Matrix {
         }
     }
 
+    void print_entries(int w = 0) const {
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = 0; j < m; j++)
+                std::cout << std::setw(w) << (*this)(i, j) << ' ';
+            std::cout << std::endl;
+        }
+    }
+
+    T det() {
+        if (n != m) {
+            // non square! det = 0
+            return 0;
+        } else {
+            // square! Possible non trivial
+            T out = 0;
+            std::pair<Matrix<T> *, Matrix<T> *> LU = (*this).lu_decomp();
+            T l_out = (*LU.first)(0, 0);
+            T u_out = (*LU.second)(0, 0);
+            if (n > 1) {
+                for (int i = 1; i < n; i++) {
+                    l_out = l_out * (*LU.first)(i, i);
+                    u_out = u_out * (*LU.second)(i, i);
+                }
+            }
+            return l_out * u_out;
+        }
+    }
+
+    // Does LU decomp, returns a size 2 array. First is lower, second upper
+    std::pair<Matrix<T> *, Matrix<T> *> lu_decomp() {
+        assert(n == m);
+        T lower[n * n], upper[n * n];
+        memset(lower, 0, sizeof(lower));
+        memset(upper, 0, sizeof(upper));
+        // upper
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = i; j < n; j++) {
+                T sum = 0;
+                for (size_t k = 0; k < i; k++)
+                    sum += (lower[i * m + k] * upper[k * m + j]);
+
+                upper[i * m + j] = (*this)(i, j) - sum;
+            }
+
+            // lower
+            for (size_t j = i; j < n; j++) {
+                if (i == j)
+                    lower[i * m + i] = 1;
+                else {
+                    T sum = 0;
+                    for (size_t k = 0; k < i; k++)
+                        sum += (lower[j * m + k] * upper[k * m + i]);
+
+                    lower[j * m + i] = ((*this)(j, i) - sum) / upper[i * m + i];
+                }
+            }
+        }
+        Matrix<T> l(n, m, lower);
+        Matrix<T> u(n, m, upper);
+        return std::make_pair(&l, &u);
+    }
+
     // Assignment operator
     // @param A (const Matrix &): Matrix to assign to this one
-    void operator=(const Matrix &A) {
-        if (A.getN() != n || A.getM() != m) {
-            delete[] entries;
-            n = A.getN();
-            m = A.getM();
-            entries = new T[n * m];
-        }
+    Matrix<T> &operator=(const Matrix &A) {
+        delete[] entries;
+        n = A.getN();
+        m = A.getM();
+        entries = new T[n * m];
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++) {
                 entries[i * m + j] = A(i, j);
             }
         }
+
+        return *this;
     }
 
     // Add the values of another matrix to this one.
