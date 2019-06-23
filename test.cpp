@@ -1,43 +1,30 @@
 #include "include/Matrix.h"
 #include "include/Vector.h"
 
+#include <iostream>
+
 int main() {
-    int cnt = 1;
 
-    double **arr = new double *[4];
-    for (int i = 0; i < 4; i++) {
-        arr[i] = new double[5];
+    int arr1[7] = {1, 2, 3, 4, 5, 9, 1};
+    int arr2[7] = {1, 6, 63, 4, 3, 9, 1};
+    int arr3[7] = {1, 1, 1, 1, 0, 0, 0};
+    int arr4[6] = {0, 0, 0, 0, 1, 1};
+    int arr5[3] = {1, 2, 3};
+    int arr6[3] = {3, 4, 2};
 
-        for (int j = 0; j < 5; j++) {
-            arr[i][j] = cnt++;
-        }
-    }
+    Vector<int> u(7, arr1);
 
-    Matrix<double> A(4, 5, arr);
+    // u.print_entries();
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 5; j++) {
-            arr[i][j] = cnt++;
-        }
-    }
+    Vector<int> v(7, arr2);
 
-    Matrix<double> B(4, 5, arr);
+    v.print_entries();
 
-    A.print_entries(2);
-    std::cout << "new" << std::endl;
-    B.print_entries();
-    std::cout << "new" << std::endl;
-    A = A + B;
+    u = 2 * u;
 
-    A.print_entries(2);
-    std::cout << "new" << std::endl;
-    A = A - A;
+    u.print_entries();
 
-    A.print_entries(2);
-    std::cout << "new" << std::endl;
-    A = A * 2;
-
-    A.print_entries();
+    Vector<int>(3, arr5).cross(Vector<int>(3, arr6)).print_entries();
 
     return 0;
 }
