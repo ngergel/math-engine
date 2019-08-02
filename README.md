@@ -5,26 +5,13 @@ A simple math engine to do various math operations.
 It supports matrices, vectors, and quaternions.
 
 
-For matrices:
-- Basic operations.
-- Matrix product.
-- Determinant.
-- LU decomposition.
-- Inverse matrix.
+For matrices: Basic operations, matrix product, determinant, LU decomposition, inverse matrix.
 
 
-For vectors:
-- Basic operations.
-- Dot product.
-- Cross product.
+For vectors: Basic operations, dot product, cross product.
 
 
-For quaternions:
-- Basic operations.
-- Norm.
-- Inverse.
-- Versor.
-- Rotation matrix.
+For quaternions: Basic operations, norm, inverse, versor, rotation matrix.
 
 ---
 
