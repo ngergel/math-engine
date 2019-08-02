@@ -4,17 +4,22 @@
 #include <iostream>
 
 int main() {
+    double *arr = new double[20];
+    for (int i = 0; i < 4; i++) {
 
-    int arr1[7] = {1, 2, 3, 4, 5, 9, 1};
-    int arr2[7] = {1, 6, 63, 4, 3, 9, 1};
-    int arr3[7] = {1, 1, 1, 1, 0, 0, 0};
-    int arr4[6] = {0, 0, 0, 0, 1, 1};
-    int arr5[3] = {1, 2, 3};
-    int arr6[3] = {3, 4, 2};
+        for (int j = 0; j < 5; j++) {
+            arr[i * 5 + j] = cnt++;
+        }
+    }
 
     Vector<int> u(7, arr1);
 
-    // u.print_entries();
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+            arr[i * 5 + j] = cnt++;
+        }
+    }
 
     Vector<int> v(7, arr2);
 
@@ -26,5 +31,12 @@ int main() {
 
     Vector<int>(3, arr5).cross(Vector<int>(3, arr6)).print_entries();
 
+    double square[] = {1, 2, 3, 4};
+    Matrix<double> det(2, 2, square);
+    det.print_entries();
+    double d = det.det();
+    std::cout << d << std::endl;
+    Matrix<double> *detinv = det.inverse();
+    detinv->print_entries(10);
     return 0;
 }

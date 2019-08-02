@@ -6,8 +6,10 @@
 
 // Include statements.
 #include <cassert>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
+#include <utility>
 template <typename T> class Matrix {
   public:
     int getN() { return n; }
@@ -19,66 +21,159 @@ template <typename T> class Matrix {
     // @param n (int): Number of rows.
     // @param m (int): Number of rows.
     // @param values (T**): Supplied entries; optional.
-    Matrix(int n = 1, int m = 1, T **values = NULL) {
+    Matrix(int n = 1, int m = 1, T *values = NULL) {
         this->n = n;
         this->m = m;
-
+        entries = new T[n * m];
         // Initialize entries.
-        entries = new T *[n];
+        // entries = new T *[n];
         for (size_t i = 0; i < n; i++) {
-            entries[i] = new T[m];
-
             if (values != NULL) {
                 for (size_t j = 0; j < m; j++)
-                    entries[i][j] = values[i][j];
+                    entries[i * m + j] = values[i * m + j];
             }
         }
     }
 
     // Destructor.
-    ~Matrix() {
-        for (size_t i = 0; i < n; i++)
-            delete[] entries[i];
-        delete[] entries;
-    }
+    ~Matrix() { delete[] entries; }
 
     // Print the entries of the matrix to stdout.
     // @param w (int): Width of the columns.
     void print_entries(int w = 0) {
         for (size_t i = 0; i < n; i++) {
             for (size_t j = 0; j < m; j++)
-                std::cout << std::setw(w) << entries[i][j] << ' ';
+                std::cout << std::setw(w) << (*this)(i, j) << ' ';
             std::cout << std::endl;
         }
     }
 
-    // Assignment operator
-    // @param A (const Matrix &): Matrix to assign to this one
-    void operator=(const Matrix &A) {
-
-        n = A.getN();
-        m = A.getM();
-        entries = new T *[n];
+    void print_entries(int w = 0) const {
         for (size_t i = 0; i < n; i++) {
-            entries[i] = new T[m];
-            for (size_t j = 0; j < m; j++) {
-                entries[i][j] = A(i, j);
+            for (size_t j = 0; j < m; j++)
+                std::cout << std::setw(w) << (*this)(i, j) << ' ';
+            std::cout << std::endl;
+        }
+    }
+
+    // Calculates the determinant of the matrix
+    T det() {
+        if (n != m) {
+            // non square! det = 0
+            return 0;
+        } else {
+            // square! Possible non trivial
+            T out = 0;
+            std::pair<const Matrix<T> *, const Matrix<T> *> LU =
+                (*this).lu_decomp();
+            T l_out = (*LU.first)(0, 0);
+            T u_out = (*LU.second)(0, 0);
+            if (n > 1) {
+                for (int i = 1; i < n; i++) {
+                    l_out = l_out * (*LU.first)(i, i);
+                    u_out = u_out * (*LU.second)(i, i);
+                }
+            }
+            return l_out * u_out;
+        }
+    }
+
+    // Does LU decomp, returns a pair containing pointers to two matrices. First
+    // is lower, second upper
+    std::pair<const Matrix<T> *, const Matrix<T> *> lu_decomp() {
+        assert(n == m);
+        T lower[n * n] = {0};
+        T upper[n * n] = {0};
+        // upper
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = i; j < n; j++) {
+                T sum = 0;
+                for (size_t k = 0; k < i; k++)
+                    sum += (lower[i * m + k] * upper[k * m + j]);
+
+                upper[i * m + j] = (*this)(i, j) - sum;
+            }
+
+            // lower
+            for (size_t j = i; j < n; j++) {
+                if (i == j)
+                    lower[i * m + i] = 1;
+                else {
+                    T sum = 0;
+                    for (size_t k = 0; k < i; k++)
+                        sum += (lower[j * m + k] * upper[k * m + i]);
+
+                    lower[j * m + i] = ((*this)(j, i) - sum) / upper[i * m + i];
+                }
             }
         }
+        Matrix<T> *l = new Matrix<T>(n, m, lower);
+        Matrix<T> *u = new Matrix<T>(n, m, upper);
+
+        l->print_entries();
+        u->print_entries();
+        return std::make_pair(l, u);
+    }
+
+    // Finds the inverse of the matrix
+    Matrix<T> *inverse() {
+        assert(this->det() != 0);
+        // Initialize an n dimensional identity matrix
+        T identity[n * m];
+        for (size_t i = 0; i < n; i++)
+            for (size_t j = 0; j < n; j++)
+                if (i != j)
+                    identity[i * m + j] = 0;
+                else
+                    identity[i * m + j] = 1;
+        // copy of matrix to manipulate
+        T *matrixCopy = new T[n * m];
+        std::memcpy(matrixCopy, entries, sizeof(T) * n * m);
+        // Gaussian elimination
+        for (size_t i = 0; i < n; i++) {
+            for (size_t k = 0; k < m; k++) {
+                identity[i * m + k] /= matrixCopy[i * m + i];
+                matrixCopy[i * m + k] /= matrixCopy[i * m + i];
+            }
+
+            for (size_t j = j = 0; j < n; j++)
+                if (j != i) {
+                    T factor = matrixCopy[j * m + i] / matrixCopy[i * m + i];
+                    for (size_t k = 0; k < m; k++) {
+                        matrixCopy[j * m + k] -= matrixCopy[i * m + k] * factor;
+                        identity[j * m + k] -= identity[i * m + k] * factor;
+                    }
+                }
+        }
+
+        return new Matrix<T>(n, m, identity);
+    }
+
+    // Assignment operator
+    // @param A (const Matrix &): Matrix to assign to this one
+    Matrix<T> &operator=(const Matrix &A) {
+        delete[] entries;
+        n = A.getN();
+        m = A.getM();
+        entries = new T[n * m];
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = 0; j < m; j++) {
+                entries[i * m + j] = A(i, j);
+            }
+        }
+
+        return *this;
     }
 
     // Add the values of another matrix to this one.
     // @param A (const Matrix &): The matrix to add to this one.
     Matrix<T> operator+(const Matrix<T> &A) {
         assert(n == A.getN() && m == A.getM());
-        T **result;
-        result = new T *[n];
+        T *result;
+        result = new T[n * m];
         for (size_t i = 0; i < n; i++) {
-            result[i] = new T[m];
-            // std::cout << i << std::endl;
-            for (size_t j = 0; j < m; j++) {
-                result[i][j] = entries[i][j] + A(i, j);
-            }
+            for (size_t j = 0; j < m; j++)
+                result[i * m + j] = (*this)(i, j) + A(i, j);
         }
         return Matrix<T>(n, m, result);
     }
@@ -87,12 +182,11 @@ template <typename T> class Matrix {
     // @param A (const Matrix &): The matrix to subtract from this one.
     Matrix<T> operator-(const Matrix<T> &A) {
         assert(n == A.getN() && m == A.getM());
-        T **result;
-        result = new T *[n];
+        T *result;
+        result = new T[n * m];
         for (size_t i = 0; i < n; i++) {
-            result[i] = new T[m];
             for (size_t j = 0; j < m; j++)
-                result[i][j] = entries[i][j] - A(i, j);
+                result[i * m + j] = (*this)(i, j) - A(i, j);
         }
         return Matrix<T>(n, m, result);
     }
@@ -100,13 +194,11 @@ template <typename T> class Matrix {
     // Scalar multiplication, note only works when A is on the right hand side
     // @param A(const T): A scalar
     Matrix<T> operator*(const T A) {
-        T **result;
-        result = new T *[n];
+        T *result;
+        result = new T[n * m];
         for (size_t i = 0; i < n; i++) {
-            result[i] = new T[m];
-            for (size_t j = 0; j < m; j++) {
-                result[i][j] = entries[i][j] * A;
-            }
+            for (size_t j = 0; j < m; j++)
+                result[i * m + j] = (*this)(i, j) * A;
         }
         return Matrix<T>(n, m, result);
     }
@@ -114,26 +206,27 @@ template <typename T> class Matrix {
     // () operator to act as subscript replacement
     // @param n(int):row
     // @param m(int):column
-    T &operator()(const size_t n, const size_t m) { return entries[n][m]; }
-    const T &operator()(const size_t n, const size_t m) const {
-        return entries[n][m];
+    T &operator()(const size_t i, const size_t j) { return entries[i * m + j]; }
+    const T &operator()(const size_t i, const size_t j) const {
+        return entries[i * m + j];
     }
 
   private:
     // Dimensions.
     size_t n, m;
     // Values in the matrix.
-    T **entries;
+    T *entries;
 };
 
 template <typename T> Matrix<T> operator*(const T A, const Matrix<T> &rhs) {
-    T **result;
-    result = new T *[rhs.getN()];
-    for (size_t i = 0; i < rhs.getN(); i++) {
-        result[i] = new T[rhs.getM()];
-        for (size_t j = 0; j < rhs.getM(); j++)
-            result[i][j] = rhs(i, j) * A;
+    T *result;
+    size_t n = rhs.getN();
+    size_t m = rhs.getM();
+    result = new T[n * m];
+    for (size_t i = 0; i < n; i++) {
+        for (size_t j = 0; j < m; j++)
+            result[i * m + j] = rhs(i, j) * A;
     }
-    return Matrix<T>(rhs.getN(), rhs.getM(), result);
+    return Matrix<T>(n, m, result);
 }
 #endif
