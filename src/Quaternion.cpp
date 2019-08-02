@@ -1,6 +1,8 @@
 // Quaternion implimentation.
 
 // Include statements.
+#include <cmath>
+#include <cassert>
 #include "../include/Quaternion.h"
 
 // Constructor.
@@ -53,4 +55,25 @@ quaternion quaternion::ham(const quaternion &u) {
 // Conjugate.
 quaternion quaternion::conj() {
 	return quaternion(a, -1 * b, -1 * c, -1 * d);
+}
+
+// Norm.
+float quaternion::norm() {
+	return (float)sqrt(a * a + b * b + c * c + d * d);
+}
+
+// Versor.
+quaternion quaternion::versor() {
+	// Verify the quaternion is non-zero.
+	assert(norm() != 0);
+
+	return *this * (1 / norm()); 
+}
+
+// Inverse.
+quaternion quaternion::inverse() {
+	// Verify the quaternion is non-zero.
+	assert(norm() != 0);
+
+	return conj() * (1 / (norm() * norm()));
 }

@@ -42,6 +42,18 @@ struct quaternion {
 	// Conjugate of quaternion.
 	// @return (quaternion): The conjugate of this quaternion.
 	quaternion conj();
+
+	// Calculate the norm of the quaternion.
+	// @return (float): The norm.
+	float norm();
+
+	// Calculate the versor of the quaternion.
+	// @return (quaternion): The versor of the quaternion.
+	quaternion versor();
+
+	// Calculate the inverse of the quaternion.
+	// @return (quaternion): The inverse of the quaternion.
+	quaternion inverse();
 };
 
 // Scalar multiplication from the left.
