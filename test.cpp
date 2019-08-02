@@ -1,9 +1,9 @@
 #include "include/Matrix.h"
 #include "include/Vector.h"
 
-int main() {
-    int cnt = 1;
+#include <iostream>
 
+int main() {
     double *arr = new double[20];
     for (int i = 0; i < 4; i++) {
 
@@ -12,7 +12,8 @@ int main() {
         }
     }
 
-    Matrix<double> A(4, 5, arr);
+    Vector<int> u(7, arr1);
+
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 5; j++) {
@@ -20,23 +21,15 @@ int main() {
         }
     }
 
-    Matrix<double> B(4, 5, arr);
+    Vector<int> v(7, arr2);
 
-    A.print_entries(2);
-    std::cout << "new" << std::endl;
-    B.print_entries();
-    std::cout << "new" << std::endl;
-    A = A + B;
+    v.print_entries();
 
-    A.print_entries(2);
-    std::cout << "new" << std::endl;
-    A = A - A;
+    u = 2 * u;
 
-    A.print_entries(2);
-    std::cout << "new" << std::endl;
-    A = A * 2;
+    u.print_entries();
 
-    A.print_entries();
+    Vector<int>(3, arr5).cross(Vector<int>(3, arr6)).print_entries();
 
     double square[] = {1, 2, 3, 4};
     Matrix<double> det(2, 2, square);
