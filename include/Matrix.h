@@ -10,13 +10,15 @@
 #include <iomanip>
 #include <iostream>
 #include <utility>
+
 template <typename T> class Matrix {
   public:
+    // Getter methods for dimensions.
     int getN() { return n; }
     int getM() { return m; }
-
     const int getN() const { return n; }
     const int getM() const { return m; }
+
     // Constructor. Dimensions default to 1.
     // @param n (int): Number of rows.
     // @param m (int): Number of rows.
@@ -24,9 +26,9 @@ template <typename T> class Matrix {
     Matrix(int n = 1, int m = 1, T *values = NULL) {
         this->n = n;
         this->m = m;
-        entries = new T[n * m];
+
         // Initialize entries.
-        // entries = new T *[n];
+        entries = new T[n * m];
         for (size_t i = 0; i < n; i++) {
             if (values != NULL) {
                 for (size_t j = 0; j < m; j++)
@@ -56,26 +58,26 @@ template <typename T> class Matrix {
         }
     }
 
-    // Calculates the determinant of the matrix
+    // Calculates the determinant of the matrix.
+    // Det is only defined for square matrices.
+    // @return (T): The determinant.
     T det() {
-        if (n != m) {
-            // non square! det = 0
-            return 0;
-        } else {
-            // square! Possible non trivial
-            T out = 0;
-            std::pair<const Matrix<T> *, const Matrix<T> *> LU =
-                (*this).lu_decomp();
-            T l_out = (*LU.first)(0, 0);
-            T u_out = (*LU.second)(0, 0);
-            if (n > 1) {
-                for (int i = 1; i < n; i++) {
-                    l_out = l_out * (*LU.first)(i, i);
-                    u_out = u_out * (*LU.second)(i, i);
-                }
+        // Verify that the matrix is square.
+        assert(n == m);
+
+        // The matrix is square! Possibly non-trivial.
+        T out = 0;
+        std::pair<const Matrix<T> *, const Matrix<T> *> LU =
+            (*this).lu_decomp();
+        T l_out = (*LU.first)(0, 0);
+        T u_out = (*LU.second)(0, 0);
+        if (n > 1) {
+            for (int i = 1; i < n; i++) {
+                l_out = l_out * (*LU.first)(i, i);
+                u_out = u_out * (*LU.second)(i, i);
             }
-            return l_out * u_out;
         }
+        return l_out * u_out;
     }
 
     // Does LU decomp, returns a pair containing pointers to two matrices. First
