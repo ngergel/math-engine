@@ -43,6 +43,7 @@ template <typename T> class Vector {
     }
 
     // Assignment operator.
+    // @param u (const Vector &): Vector to be assigned.
     void operator=(const Vector &u) {
         n = u.dim();
 
