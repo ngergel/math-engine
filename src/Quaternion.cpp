@@ -1,6 +1,6 @@
 // Quaternion implimentation.
 
-// Include statements.
+// Include statements needed for implimentation.
 #include "../include/Quaternion.h"
 #include <cassert>
 #include <cmath>
@@ -73,4 +73,24 @@ quaternion quaternion::inverse() {
     assert(norm() != 0);
 
     return conj() * (1 / (norm() * norm()));
+}
+
+// Rotation matrix.
+Matrix<float> quaternion::rot_matrix() {
+    // Initialize value arrayand unit quaternion.
+    float *val_arr = new float[9];
+    quat v = versor();
+
+    // Calculate all the entries.
+    val_arr[0] = (v.a * v.a) + (v.b * v.b) - (v.c * v.c) - (v.d * v.d);
+    val_arr[1] = (2 * v.b * v.c) - (2 * v.a * v.d);
+    val_arr[2] = (2 * v.b * v.d) + (2 * v.a * v.c);
+    val_arr[3] = (2 * v.b * v.c) + (2 * v.a * v.d);
+    val_arr[4] = (v.a * v.a) - (v.b * v.b) + (v.c * v.c) - (v.d * v.d);
+    val_arr[5] = (2 * v.c * v.d) - (2 * v.a * v.b);
+    val_arr[6] = (2 * v.b * v.d) - (2 * v.a * v.c);
+    val_arr[7] = (2 * v.c * v.d) + (2 * v.a * v.b);
+    val_arr[8] = (v.a * v.a) - (v.b * v.b) - (v.c * v.c) + (v.d * v.d);
+
+    return Matrix<float>(3, 3, val_arr);
 }

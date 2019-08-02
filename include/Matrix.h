@@ -22,7 +22,7 @@ template <typename T> class Matrix {
     // Constructor. Dimensions default to 1.
     // @param n (int): Number of rows.
     // @param m (int): Number of rows.
-    // @param values (T**): Supplied entries; optional.
+    // @param values (T*): Supplied entries; optional.
     Matrix(int n = 1, int m = 1, T *values = NULL) {
         this->n = n;
         this->m = m;

@@ -4,6 +4,9 @@
 #ifndef QUATERNION_H
 #define QUATERNION_H
 
+// Include statements needed for definitions.
+#include "../include/Matrix.h"
+
 struct quaternion {
     // Real/imaginary components, in the form a + bi + cj + dk.
     float a, b, c, d;
@@ -35,16 +38,19 @@ struct quaternion {
     // @return (quaternion): Hamilton product of this * u.
     quaternion ham(const quaternion &u);
 
-    // Calculate the norm of the quaternion.
+    // Calculate the norm.
     // @return (float): The norm.
     float norm();
 
-    // Conjugate, versor, and inverse of the quaternion.
-    // @return (quaternion): The conjugate, versor, or inverse of this
-    // quaternion.
+    // Calculate the conjugate, versor, and inversen.
+    // @return (quaternion): The conjugate, versor, or inverse.
     quaternion conj();
     quaternion versor();
     quaternion inverse();
+
+    // Calculate the rotation matrix.
+    // @return (Matrix<float>): The 3 x 3 rotation matrix.
+    Matrix<float> rot_matrix();
 };
 
 // Shortform.
