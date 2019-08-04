@@ -1,7 +1,7 @@
 // Quaternion implimentation.
 
 // Include statements needed for implimentation.
-#include "../include/Quaternion.h"
+#include "Quaternion.h"
 #include <cassert>
 #include <cmath>
 
