@@ -153,7 +153,7 @@ template <typename T> class Matrix {
 
     // Assignment operator
     // @param A (const Matrix &): Matrix to assign to this one
-    Matrix<T> &operator=(const Matrix &A) {
+    void operator=(const Matrix &A) {
         delete[] entries;
         n = A.getN();
         m = A.getM();
@@ -163,8 +163,6 @@ template <typename T> class Matrix {
                 entries[i * m + j] = A(i, j);
             }
         }
-
-        return *this;
     }
 
     // Add the values of another matrix to this one.

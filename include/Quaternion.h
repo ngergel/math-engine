@@ -5,7 +5,7 @@
 #define QUATERNION_H
 
 // Include statements needed for definitions.
-#include "../include/Matrix.h"
+#include "Matrix.h"
 
 struct quaternion {
     // Real/imaginary components, in the form a + bi + cj + dk.
